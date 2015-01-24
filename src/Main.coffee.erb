@@ -20,8 +20,10 @@ class Main extends Phaser.State
   preload:->  
     @game.stage.disableVisibilityChange=true
 
+    @game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+    @game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     @game.scale.pageAlignHorizontally = true
-    @game.scale.pageAlignVertically = false
+    @game.scale.pageAlignVertically = true
     @game.scale.setShowAll()
     @game.scale.refresh()
 
@@ -52,8 +54,6 @@ class Main extends Phaser.State
 
     @game.load.image('arse', 'images/arse.png')
     @game.load.image('bros', 'images/bros.png')
-    @game.load.image('circle', 'images/circle.png')
-    @game.load.image('square', 'images/square.png')
 
   loadRender:->
     @graphics.beginFill(0x00ff44)
@@ -70,21 +70,5 @@ class Main extends Phaser.State
 
   startGame:=>
     @game.state.start('splash')
-
-  tweet:(message, follow)->
-    url = encodeURI("http://lightrider.com/")
-    message = encodeURI(message)
-    related = encodeURI(follow.toString())
-    @openWindow("https://twitter.com/intent/tweet?text=#{message}&hashtags=lightrider&url=#{url}&related=#{related}&")
-
-  openWindow:(url)->
-    windowOptions = "scrollbars=yes,resizable=yes,toolbar=no,location=yes"
-    width = 550
-    height = 420
-    left = Math.round((screen.width / 2) - (width / 2))
-    top = 0;        
-    if screen.height > height
-      top = Math.round((screen.height / 2) - (height / 2))
-    window.open(url, 'intent', "#{windowOptions},width=#{width},height=#{height},left=#{left},top=#{top}")
 
 WhatNow.Main = Main
