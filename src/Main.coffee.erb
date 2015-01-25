@@ -1,0 +1,78 @@
+#= require Splash
+#= require Arena
+
+WhatNow = window.WhatNow
+
+Splash = WhatNow.Splash
+Arena = WhatNow.Arena
+
+class Main extends Phaser.State
+  constructor:(@parent='')->
+
+  run:(debug = false)->
+    mode = if debug then Phaser.CANVAS else Phaser.AUTO
+    new Phaser.Game(800, 450, mode, @parent, this, false, false)
+
+  destroy:->
+    destroy(@text)
+    destroy(@graphics)
+
+  preload:->  
+    @game.stage.disableVisibilityChange=true
+
+    @game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+    @game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    @game.scale.pageAlignHorizontally = true
+    @game.scale.pageAlignVertically = true
+    @game.scale.setShowAll()
+    @game.scale.refresh()
+
+    @game.scale.enterLandscape.add =>
+      @game.scale.setShowAll()
+      @game.scale.refresh()
+
+    @game.scale.enterPortrait.add =>
+      @game.scale.setShowAll()
+      @game.scale.refresh()
+
+    message = "=== W H A T N O W ===\nis\nLOADING"
+    style =
+      font: "30px Courier"
+      fill: "#00ff44"
+      align: "center"
+    @text = @game.add.text(@game.world.centerX, @game.world.centerY, message, style)
+    @text.anchor.setTo(0.5, 0.5)
+    @graphics = @game.add.graphics(0, 0)
+
+    @graphics.lineStyle(1, 0x5588cc, 1)
+    @graphics.drawRect(199, 339, 502, 22)
+
+    @game.load.onLoadComplete.addOnce(@ready)
+
+    @game.state.add('splash', new Splash(), false)
+    @game.state.add('arena', new Arena(), false)
+
+    @game.load.image('arse', 'images/arse.png')
+    @game.load.image('bros', 'images/bros.png')
+    @game.load.image('ship', 'images/ship.png')
+    @game.load.image('bullet', 'images/bullet.png')
+    @game.load.image('polluted', 'images/polluted.png')
+
+  loadRender:->
+    @graphics.beginFill(0x00ff44)
+    @graphics.drawRect(200, 340, 5 * @game.load.progress, 20)
+    @graphics.endFill()
+
+  render:->
+    @graphics.clear()
+    @loadRender() unless @game.load.hasLoaded
+
+  ready:=>
+    @text.alpha = 0.0
+    @startGame()
+
+  startGame:=>
+#   @game.state.start('splash')
+    @game.state.start('arena')
+
+WhatNow.Main = Main

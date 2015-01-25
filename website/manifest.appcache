@@ -1,0 +1,16 @@
+CACHE MANIFEST
+
+# LightRider v004
+
+NETWORK:
+*
+
+CACHE:
+#index.html
+offline.html
+404.html
+#stylesheets/what-now.css
+#javascripts/what-now.js
+
+FALLBACK:
+/ offline.html
