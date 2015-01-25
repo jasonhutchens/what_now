@@ -18,7 +18,7 @@ class Arena extends Phaser.State
 
     @ship = @game.add.sprite(@game.world.centerX, @game.world.centerY, 'ship')
     @ship.anchor.set(0.5)
-    @ship.z = 1
+    @ship.z = 2
     @ship.angle = -90
 
     @game.physics.enable(@ship, Phaser.Physics.ARCADE)
@@ -30,6 +30,7 @@ class Arena extends Phaser.State
     @pad = @game.input.gamepad.pad1
 
     @scale = 1
+    @cooldown = 0
 
   render:->
     @camera.scale.x = @scale
@@ -46,6 +47,20 @@ class Arena extends Phaser.State
 
     thrust = 200 * @pad.buttonValue(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER)
     @game.physics.arcade.accelerationFromRotation(@ship.rotation, thrust, @ship.body.acceleration)
+
+    if @cooldown > 0
+      @cooldown -= 1
+
+    if @pad.isDown(Phaser.Gamepad.XBOX360_A) && @cooldown == 0
+      bullet = @game.add.sprite(@ship.x, @ship.y, 'bullet')
+      bullet.anchor.set(0.5)
+      bullet.rotation = @ship.rotation
+      bullet.z = 1
+      bullet.checkWorldBounds = true
+      bullet.outOfBoundsKill = true
+      @game.physics.enable(bullet, Phaser.Physics.ARCADE)
+      @game.physics.arcade.velocityFromRotation(bullet.rotation, 1000, bullet.body.velocity)
+      @cooldown = 5
 
     @scale = 1
     if @ship.body.speed > 200
